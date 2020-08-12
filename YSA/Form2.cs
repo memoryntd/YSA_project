@@ -197,7 +197,6 @@ namespace YSA
 
         private void addOrder_Click(object sender, EventArgs e)
         {
-            
             string theDate = дата_заключенияDateTimePicker.Value.ToShortDateString();
             string sql = $@"INSERT INTO заказ_борд (Заказчик , Название , Количество , Остаток , Цвет , Дата_заключения)
                             VALUES('{заказчикComboBox.Text}' , '{названиеComboBox.Text}' 
@@ -297,66 +296,80 @@ namespace YSA
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-                заказ_бордDataGridView.Columns[6].DefaultCellStyle.Format = "yyyy/MM/dd";
-                int n = e.RowIndex;
-                string query = $@"DELETE FROM заказ_борд WHERE код_заказа = '{заказ_бордDataGridView.Rows[n].Cells[0].FormattedValue.ToString()}'" +
-                               $@"AND Заказчик = '{заказ_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'" +
-                               $@"AND Название = '{заказ_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'" +
-                               $@"AND Количество = '{заказ_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}'" +
-                               $@"AND Остаток = '{заказ_бордDataGridView.Rows[n].Cells[4].FormattedValue.ToString()}'" +
-                               $@"AND Цвет = '{заказ_бордDataGridView.Rows[n].Cells[5].FormattedValue.ToString()}'" +
-                               $@"AND Дата_заключения = '{заказ_бордDataGridView.Rows[n].Cells[6].FormattedValue.ToString()}'";
-                MySqlCommand command = new MySqlCommand(query, connection);
+                DialogResult dialogResult = MessageBox.Show("Вы уверены, что хотите удалить заказ?", "Удаление", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    заказ_бордDataGridView.Columns[6].DefaultCellStyle.Format = "yyyy/MM/dd";
+                    int n = e.RowIndex;
+                    string query = $@"DELETE FROM заказ_борд WHERE код_заказа = '{заказ_бордDataGridView.Rows[n].Cells[0].FormattedValue.ToString()}'" +
+                                   $@"AND Заказчик = '{заказ_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'" +
+                                   $@"AND Название = '{заказ_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'" +
+                                   $@"AND Количество = '{заказ_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}'" +
+                                   $@"AND Остаток = '{заказ_бордDataGridView.Rows[n].Cells[4].FormattedValue.ToString()}'" +
+                                   $@"AND Цвет = '{заказ_бордDataGridView.Rows[n].Cells[5].FormattedValue.ToString()}'" +
+                                   $@"AND Дата_заключения = '{заказ_бордDataGridView.Rows[n].Cells[6].FormattedValue.ToString()}'";
+                    MySqlCommand command = new MySqlCommand(query, connection);
 
 
-                string sql = $@"UPDATE склад_борд
+                    string sql = $@"UPDATE склад_борд
                                 SET В_заказах = В_заказах - '{заказ_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}',
                                     Свободная_продажа = Количество - В_заказах
                                 WHERE Название_борд = '{заказ_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'" +
-                                        $@"AND Цвет = '{заказ_бордDataGridView.Rows[n].Cells[5].FormattedValue.ToString()}'";
-                MySqlCommand com_sql = new MySqlCommand(sql, connection);
+                                            $@"AND Цвет = '{заказ_бордDataGridView.Rows[n].Cells[5].FormattedValue.ToString()}'";
+                    MySqlCommand com_sql = new MySqlCommand(sql, connection);
 
-                if (com_sql.ExecuteNonQuery() > 0)
+
+
+                    if (com_sql.ExecuteNonQuery() > 0)
+                    {
+                        try
+                        {
+                            label2.Visible = true;
+                            label2.Text = "Успешно";
+                            Clear(заказ_бордDataGridView);
+                            refOrder_Click(sender, e);
+                        }
+                        catch (Exception ex)
+                        {
+                            label2.Visible = true;
+                            label2.Text = ex.ToString() + "Error!";
+                        }
+                    }
+
+                    if (command.ExecuteNonQuery() > 0)
+                    {
+                        try
+                        {
+                            label2.Visible = true;
+                            label2.Text = "Успешно";
+                            Clear(заказ_бордDataGridView);
+                            refOrder_Click(sender, e);
+                        }
+                        catch (Exception ex)
+                        {
+                            label2.Visible = true;
+                            label2.Text = ex.ToString() + "Error!";
+                        }
+                    }
+                    заказ_бордDataGridView.Columns[6].DefaultCellStyle.Format = "dd/MM/yyyy";
+                    sortmode();
+                }
+                    
+                else if (dialogResult == DialogResult.No)
                 {
-                    try
-                    {
-                        label2.Visible = true;
-                        label2.Text = "Успешно";
-                        Clear(заказ_бордDataGridView);
-                        refOrder_Click(sender, e);
-                    }
-                    catch (Exception ex)
-                    {
-                        label2.Visible = true;
-                        label2.Text = ex.ToString() + "Error!";
-                    }
+
                 }
 
-                if (command.ExecuteNonQuery() > 0)
-                {
-                    try
-                    {
-                        label2.Visible = true;
-                        label2.Text = "Успешно";
-                        Clear(заказ_бордDataGridView);
-                        refOrder_Click(sender, e);
-                    }
-                    catch (Exception ex)
-                    {
-                        label2.Visible = true;
-                        label2.Text = ex.ToString() + "Error!";
-                    }
-                }
-                заказ_бордDataGridView.Columns[6].DefaultCellStyle.Format = "dd/MM/yyyy";
-                sortmode();
-            }
             else
-            {
-                //Form f2 = new RedOrdersV2();
-                //f2.Show();
-                //MessageBox.Show("Возможность временно выключена");
-            }
+                {
+                    //Form f2 = new RedOrdersV2();
+                    //f2.Show();
+                    //MessageBox.Show("Возможность временно выключена");
+                }
+
             заказ_бордDataGridView.Sort(заказ_бордDataGridView.Columns[0], ListSortDirection.Descending);
+            }
+            
 
 
         }
@@ -456,52 +469,61 @@ namespace YSA
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-                int n = e.RowIndex;
-                календарь_поступления_бордDataGridView.Columns[0].DefaultCellStyle.Format = "yyyy/MM/dd";
-                string sql1 = $@"UPDATE склад_борд 
+                DialogResult dialogResult = MessageBox.Show("Вы уверены, что хотите удалить запись производства?", "Удаление", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+
+                    int n = e.RowIndex;
+                    календарь_поступления_бордDataGridView.Columns[0].DefaultCellStyle.Format = "yyyy/MM/dd";
+                    string sql1 = $@"UPDATE склад_борд 
                                 SET Количество = Количество - '{календарь_поступления_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}',
                                 Свободная_продажа = Свободная_продажа - '{календарь_поступления_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}'
                                 WHERE Название_борд = '{календарь_поступления_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'" +
-                                          $@"AND Цвет = '{календарь_поступления_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'";
-                MySqlCommand com_sql1 = new MySqlCommand(sql1, connection);
-                if (com_sql1.ExecuteNonQuery() > 0)
-                {
-                    try
+                                              $@"AND Цвет = '{календарь_поступления_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'";
+                    MySqlCommand com_sql1 = new MySqlCommand(sql1, connection);
+                    if (com_sql1.ExecuteNonQuery() > 0)
                     {
-                        label2.Visible = true;
-                        label2.Text = "Успешно!";
-                        Clear(склад_бордDataGridView);
-                        refWarehouse_Click(sender, e);
+                        try
+                        {
+                            label2.Visible = true;
+                            label2.Text = "Успешно!";
+                            Clear(склад_бордDataGridView);
+                            refWarehouse_Click(sender, e);
+                        }
+                        catch (Exception ex)
+                        {
+                            label2.Visible = true;
+                            label2.Text = ex.ToString() + "Error!";
+                        }
                     }
-                    catch (Exception ex)
+
+
+
+
+                    string query = $@"DELETE FROM календарь_поступления_борд WHERE Date = '{календарь_поступления_бордDataGridView.Rows[n].Cells[0].FormattedValue.ToString()}'" +
+                                   $@"AND Название = '{календарь_поступления_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'" +
+                                   $@"AND Цвет = '{календарь_поступления_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'" +
+                                   $@"AND Количество = '{календарь_поступления_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}'";
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    if (command.ExecuteNonQuery() > 0)
                     {
-                        label2.Visible = true;
-                        label2.Text = ex.ToString() + "Error!";
+                        try
+                        {
+                            label2.Visible = true;
+                            label2.Text = "Успешно!";
+                            Clear(календарь_поступления_бордDataGridView);
+                            refCal_Click(sender, e);
+                        }
+                        catch (Exception ex)
+                        {
+                            label2.Visible = true;
+                            label2.Text = ex.ToString() + "Error!";
+                        }
                     }
                 }
-
-
-
-
-                string query = $@"DELETE FROM календарь_поступления_борд WHERE Date = '{календарь_поступления_бордDataGridView.Rows[n].Cells[0].FormattedValue.ToString()}'" +
-                               $@"AND Название = '{календарь_поступления_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'" +
-                               $@"AND Цвет = '{календарь_поступления_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'" +
-                               $@"AND Количество = '{календарь_поступления_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}'";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                if (command.ExecuteNonQuery() > 0)
+                else if (dialogResult == DialogResult.No)
                 {
-                    try
-                    {
-                        label2.Visible = true;
-                        label2.Text = "Успешно!";
-                        Clear(календарь_поступления_бордDataGridView);
-                        refCal_Click(sender, e);
-                    }
-                    catch (Exception ex)
-                    {
-                        label2.Visible = true;
-                        label2.Text = ex.ToString() + "Error!";
-                    }
+
                 }
             }
 
@@ -543,24 +565,32 @@ namespace YSA
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-                int n = e.RowIndex;
-                string query = $@"DELETE FROM заказчики WHERE Имя = '{заказчикиDataGridView.Rows[n].Cells[0].FormattedValue.ToString()}'" +
-                               $@"AND Контактные_данные = '{заказчикиDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                if (command.ExecuteNonQuery() > 0)
+                DialogResult dialogResult = MessageBox.Show("Вы уверены, что хотите удалить заказчика?", "Удаление", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
                 {
-                    try
+                    int n = e.RowIndex;
+                    string query = $@"DELETE FROM заказчики WHERE Имя = '{заказчикиDataGridView.Rows[n].Cells[0].FormattedValue.ToString()}'" +
+                                   $@"AND Контактные_данные = '{заказчикиDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'";
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    if (command.ExecuteNonQuery() > 0)
                     {
-                        label2.Visible = true;
-                        label2.Text = "Успешно!";
-                        Clear(заказчикиDataGridView);
-                        refOrd_Click(sender, e);
+                        try
+                        {
+                            label2.Visible = true;
+                            label2.Text = "Успешно!";
+                            Clear(заказчикиDataGridView);
+                            refOrd_Click(sender, e);
+                        }
+                        catch (Exception ex)
+                        {
+                            label2.Visible = true;
+                            label2.Text = ex.ToString() + "Error!";
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        label2.Visible = true;
-                        label2.Text = ex.ToString() + "Error!";
-                    }
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+
                 }
             }
 
@@ -606,27 +636,36 @@ namespace YSA
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-                int n = e.RowIndex;
-                string query = $@"DELETE FROM склад_борд WHERE Название_борд = '{склад_бордDataGridView.Rows[n].Cells[0].FormattedValue.ToString()}'" +
-                               $@"AND Цвет = '{склад_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'" +
-                               $@"AND Количество = '{склад_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'" +
-                               $@"AND Свободная_продажа = '{склад_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}'" +
-                               $@"AND В_заказах = '{склад_бордDataGridView.Rows[n].Cells[4].FormattedValue.ToString()}'";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                if (command.ExecuteNonQuery() > 0)
+                DialogResult dialogResult = MessageBox.Show("Вы уверены, что хотите удалить бордюр со склада?", "Удаление", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
                 {
-                    try
+
+                    int n = e.RowIndex;
+                    string query = $@"DELETE FROM склад_борд WHERE Название_борд = '{склад_бордDataGridView.Rows[n].Cells[0].FormattedValue.ToString()}'" +
+                                   $@"AND Цвет = '{склад_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'" +
+                                   $@"AND Количество = '{склад_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'" +
+                                   $@"AND Свободная_продажа = '{склад_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}'" +
+                                   $@"AND В_заказах = '{склад_бордDataGridView.Rows[n].Cells[4].FormattedValue.ToString()}'";
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    if (command.ExecuteNonQuery() > 0)
                     {
-                        label4.Visible = true;
-                        label4.Text = "Успешное удаление";
-                        Clear(склад_бордDataGridView);
-                        refWarehouse_Click(sender, e);
+                        try
+                        {
+                            label4.Visible = true;
+                            label4.Text = "Успешное удаление";
+                            Clear(склад_бордDataGridView);
+                            refWarehouse_Click(sender, e);
+                        }
+                        catch (Exception ex)
+                        {
+                            label4.Visible = true;
+                            label4.Text = ex.ToString() + "Error!";
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        label4.Visible = true;
-                        label4.Text = ex.ToString() + "Error!";
-                    }
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+
                 }
             }
         }
@@ -642,24 +681,33 @@ namespace YSA
 
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn && e.RowIndex >= 0)
             {
-                int n = e.RowIndex;
-                string query = $@"DELETE FROM список_борд WHERE Название_борд = '{список_бордDataGridView.Rows[n].Cells[0].FormattedValue.ToString()}'" +
-                               $@"AND Цвет = '{список_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                if (command.ExecuteNonQuery() > 0)
+                DialogResult dialogResult = MessageBox.Show("Вы уверены, что хотите удалить бордюр из списка?", "Удаление", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
                 {
-                    try
+                    int n = e.RowIndex;
+                    string query = $@"DELETE FROM список_борд WHERE Название_борд = '{список_бордDataGridView.Rows[n].Cells[0].FormattedValue.ToString()}'" +
+                                   $@"AND Цвет = '{список_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'";
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    if (command.ExecuteNonQuery() > 0)
                     {
-                        label1.Visible = true;
-                        label1.Text = "Успешное удаление";
-                        Clear(список_бордDataGridView);
-                        refList_Click(sender, e);
+                        try
+                        {
+                            label1.Visible = true;
+                            label1.Text = "Успешное удаление";
+                            Clear(список_бордDataGridView);
+                            refList_Click(sender, e);
+                        }
+                        catch (Exception ex)
+                        {
+                            label1.Visible = true;
+                            label1.Text = ex.ToString() + "Error!";
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        label1.Visible = true;
-                        label1.Text = ex.ToString() + "Error!";
-                    }
+                }
+
+                else if (dialogResult == DialogResult.No)
+                {
+
                 }
             }
         }
@@ -758,51 +806,59 @@ namespace YSA
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-                продажа_бордDataGridView.Columns[0].DefaultCellStyle.Format = "yyyy/MM/dd";
-                int n = e.RowIndex;
-                string query = $@"DELETE FROM продажа_борд WHERE Дата = '{продажа_бордDataGridView.Rows[n].Cells[0].FormattedValue.ToString()}'" +
-                               $@"AND Название_борд = '{продажа_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'" +
-                               $@"AND Цвет = '{продажа_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'" +
-                               $@"AND Количество = '{продажа_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}'";
-                MySqlCommand command = new MySqlCommand(query, connection);
+                DialogResult dialogResult = MessageBox.Show("Вы уверены, что хотите удалить запись продажи?", "Удаление", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    продажа_бордDataGridView.Columns[0].DefaultCellStyle.Format = "yyyy/MM/dd";
+                    int n = e.RowIndex;
+                    string query = $@"DELETE FROM продажа_борд WHERE Дата = '{продажа_бордDataGridView.Rows[n].Cells[0].FormattedValue.ToString()}'" +
+                                   $@"AND Название_борд = '{продажа_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'" +
+                                   $@"AND Цвет = '{продажа_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'" +
+                                   $@"AND Количество = '{продажа_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}'";
+                    MySqlCommand command = new MySqlCommand(query, connection);
 
-                string sql = $@"UPDATE склад_борд 
+                    string sql = $@"UPDATE склад_борд 
                                 SET Количество = Количество + '{продажа_бордDataGridView.Rows[n].Cells[3].FormattedValue}',
                                 Свободная_продажа = Свободная_продажа + '{продажа_бордDataGridView.Rows[n].Cells[3].FormattedValue}'
                                 WHERE Название_борд = '{продажа_бордDataGridView.Rows[n].Cells[1].FormattedValue}'" +
-                                      $@"AND Цвет = '{продажа_бордDataGridView.Rows[n].Cells[2].FormattedValue}'";
-                MySqlCommand com_idSql = new MySqlCommand(sql, connection);
+                                          $@"AND Цвет = '{продажа_бордDataGridView.Rows[n].Cells[2].FormattedValue}'";
+                    MySqlCommand com_idSql = new MySqlCommand(sql, connection);
 
 
-                if (command.ExecuteNonQuery() > 0)
-                {
-                    try
+                    if (command.ExecuteNonQuery() > 0)
                     {
-                        label2.Visible = true;
-                        label2.Text = "Успешно!";
-                        Clear(продажа_бордDataGridView);
-                        refCell_Click(sender, e);
+                        try
+                        {
+                            label2.Visible = true;
+                            label2.Text = "Успешно!";
+                            Clear(продажа_бордDataGridView);
+                            refCell_Click(sender, e);
+                        }
+                        catch (Exception ex)
+                        {
+                            label2.Visible = true;
+                            label2.Text = ex.ToString() + "Error!";
+                        }
                     }
-                    catch (Exception ex)
+                    if (com_idSql.ExecuteNonQuery() > 0)
                     {
-                        label2.Visible = true;
-                        label2.Text = ex.ToString() + "Error!";
+                        try
+                        {
+                            label2.Visible = true;
+                            label2.Text = "Успешно!";
+                            Clear(склад_бордDataGridView);
+                            refWarehouse_Click(sender, e);
+                        }
+                        catch (Exception ex)
+                        {
+                            label2.Visible = true;
+                            label2.Text = ex.ToString() + "Error!";
+                        }
                     }
                 }
-                if (com_idSql.ExecuteNonQuery() > 0)
+                else if (dialogResult == DialogResult.No)
                 {
-                    try
-                    {
-                        label2.Visible = true;
-                        label2.Text = "Успешно!";
-                        Clear(склад_бордDataGridView);
-                        refWarehouse_Click(sender, e);
-                    }
-                    catch (Exception ex)
-                    {
-                        label2.Visible = true;
-                        label2.Text = ex.ToString() + "Error!";
-                    }
+
                 }
             }
 
@@ -900,84 +956,91 @@ namespace YSA
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-
-                int n = e.RowIndex;
-                string sql = $@"UPDATE заказ_борд 
+                DialogResult dialogResult = MessageBox.Show("Вы уверены, что хотите удалить запись отгрузки заказа?", "Удаление", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    int n = e.RowIndex;
+                    string sql = $@"UPDATE заказ_борд 
                                 SET Остаток = Остаток + '{Convert.ToInt32(отгрузки_бордDataGridView.Rows[n].Cells[4].FormattedValue)}'
                                 WHERE код_заказа = '{отгрузки_бордDataGridView.Rows[n].Cells[0].FormattedValue}'";
-                MySqlCommand command = new MySqlCommand(sql, connection);
+                    MySqlCommand command = new MySqlCommand(sql, connection);
 
-                try
-                {
-                    if (command.ExecuteNonQuery() > 0)
-                    {
-                        label2.Visible = true;
-                        label2.Text = "Успешно";
-                        заказчикComboBox.Text = "";
-                        названиеComboBox.Text = "";
-                        количествоTextBox1.Text = "";
-                        цветComboBox1.Text = "";
-                        Clear(заказ_бордDataGridView);
-                        refOrder_Click(sender, e);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    label2.Visible = true;
-                    label2.Text = ex.ToString() + "Ошибка";
-                    MessageBox.Show(ex.ToString());
-                }
-
-
-                string sql1 = $@"UPDATE склад_борд 
-                                SET В_заказах = В_заказах + '{Convert.ToInt32(отгрузки_бордDataGridView.Rows[n].Cells[4].FormattedValue)}', 
-                                    Количество = Количество + '{Convert.ToInt32(отгрузки_бордDataGridView.Rows[n].Cells[4].FormattedValue)}'
-                                WHERE Название_борд = '{отгрузки_бордDataGridView.Rows[n].Cells[2].FormattedValue}'" +
-                                $@"AND Цвет = '{отгрузки_бордDataGridView.Rows[n].Cells[3].FormattedValue}'";
-                MySqlCommand command1 = new MySqlCommand(sql1, connection);
-
-                try
-                {
-                    if (command1.ExecuteNonQuery() > 0)
-                    {
-                        label2.Visible = true;
-                        label2.Text = "Успешно";
-                        Clear(заказ_бордDataGridView);
-                        Clear(склад_бордDataGridView);
-                        refOrder_Click(sender, e);
-                        refWarehouse_Click(sender, e);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    label2.Visible = true;
-                    label2.Text = ex.ToString() + "Ошибка";
-                    MessageBox.Show(ex.ToString());
-                }
-
-                отгрузки_бордDataGridView.Columns[5].DefaultCellStyle.Format = "yyyy/MM/dd";
-
-                string query = $@"DELETE FROM отгрузки_борд WHERE Код_заказа = '{отгрузки_бордDataGridView.Rows[n].Cells[0].FormattedValue}'" +
-                               $@"AND Заказчик = '{отгрузки_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'" +
-                               $@"AND Название_борд = '{отгрузки_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'" +
-                               $@"AND Цвет = '{отгрузки_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}'" +
-                               $@"AND Количество = '{отгрузки_бордDataGridView.Rows[n].Cells[4].FormattedValue.ToString()}'" +
-                               $@"AND Дата = '{отгрузки_бордDataGridView.Rows[n].Cells[5].FormattedValue.ToString()} '";
-                MySqlCommand command2 = new MySqlCommand(query, connection);
-                if (command2.ExecuteNonQuery() > 0)
-                {
                     try
                     {
-                        label2.Visible = true;
-                        label2.Text = "Успешно!";
-                        Clear(отгрузки_бордDataGridView);
-                        refOTZB_Click(sender, e);
+                        if (command.ExecuteNonQuery() > 0)
+                        {
+                            label2.Visible = true;
+                            label2.Text = "Успешно";
+                            заказчикComboBox.Text = "";
+                            названиеComboBox.Text = "";
+                            количествоTextBox1.Text = "";
+                            цветComboBox1.Text = "";
+                            Clear(заказ_бордDataGridView);
+                            refOrder_Click(sender, e);
+                        }
                     }
                     catch (Exception ex)
                     {
                         label2.Visible = true;
-                        label2.Text = ex.ToString() + "Error!";
+                        label2.Text = ex.ToString() + "Ошибка";
+                        MessageBox.Show(ex.ToString());
                     }
+
+
+                    string sql1 = $@"UPDATE склад_борд 
+                                SET В_заказах = В_заказах + '{Convert.ToInt32(отгрузки_бордDataGridView.Rows[n].Cells[4].FormattedValue)}', 
+                                    Количество = Количество + '{Convert.ToInt32(отгрузки_бордDataGridView.Rows[n].Cells[4].FormattedValue)}'
+                                WHERE Название_борд = '{отгрузки_бордDataGridView.Rows[n].Cells[2].FormattedValue}'" +
+                                    $@"AND Цвет = '{отгрузки_бордDataGridView.Rows[n].Cells[3].FormattedValue}'";
+                    MySqlCommand command1 = new MySqlCommand(sql1, connection);
+
+                    try
+                    {
+                        if (command1.ExecuteNonQuery() > 0)
+                        {
+                            label2.Visible = true;
+                            label2.Text = "Успешно";
+                            Clear(заказ_бордDataGridView);
+                            Clear(склад_бордDataGridView);
+                            refOrder_Click(sender, e);
+                            refWarehouse_Click(sender, e);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        label2.Visible = true;
+                        label2.Text = ex.ToString() + "Ошибка";
+                        MessageBox.Show(ex.ToString());
+                    }
+
+                    отгрузки_бордDataGridView.Columns[5].DefaultCellStyle.Format = "yyyy/MM/dd";
+
+                    string query = $@"DELETE FROM отгрузки_борд WHERE Код_заказа = '{отгрузки_бордDataGridView.Rows[n].Cells[0].FormattedValue}'" +
+                                   $@"AND Заказчик = '{отгрузки_бордDataGridView.Rows[n].Cells[1].FormattedValue.ToString()}'" +
+                                   $@"AND Название_борд = '{отгрузки_бордDataGridView.Rows[n].Cells[2].FormattedValue.ToString()}'" +
+                                   $@"AND Цвет = '{отгрузки_бордDataGridView.Rows[n].Cells[3].FormattedValue.ToString()}'" +
+                                   $@"AND Количество = '{отгрузки_бордDataGridView.Rows[n].Cells[4].FormattedValue.ToString()}'" +
+                                   $@"AND Дата = '{отгрузки_бордDataGridView.Rows[n].Cells[5].FormattedValue.ToString()} '";
+                    MySqlCommand command2 = new MySqlCommand(query, connection);
+                    if (command2.ExecuteNonQuery() > 0)
+                    {
+                        try
+                        {
+                            label2.Visible = true;
+                            label2.Text = "Успешно!";
+                            Clear(отгрузки_бордDataGridView);
+                            refOTZB_Click(sender, e);
+                        }
+                        catch (Exception ex)
+                        {
+                            label2.Visible = true;
+                            label2.Text = ex.ToString() + "Error!";
+                        }
+                    }
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+
                 }
             }
 
@@ -1002,7 +1065,7 @@ namespace YSA
             //MessageBox.Show("Возможность временно выключена");
         }
 
-        
+
 
         public void код_заказаTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -1020,7 +1083,7 @@ namespace YSA
 
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        public void button3_Click(object sender, EventArgs e)
         {
             MySqlCommand cmd = new MySqlCommand("sp_test", connection);
             cmd.CommandType = CommandType.StoredProcedure;
@@ -1082,17 +1145,28 @@ namespace YSA
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (comboBox6.Text != "")
+
+            //TODO: подтверждение
+
+            DialogResult dialogResult = MessageBox.Show("Sure", "Some Title", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
             {
-                string sql = $@"SELECT Код_заказа, Заказчик, Название_борд, Цвет, Количество, Дата FROM отгрузки_борд WHERE Заказчик = '{comboBox6.Text}'";
-                MySqlDataAdapter sqladapter = new MySqlDataAdapter(sql, connection);
-                DataSet ds = new DataSet();
-                sqladapter.Fill(ds);
-                отгрузки_бордDataGridView.DataSource = ds.Tables[0];
+                if (comboBox6.Text != "")
+                {
+                    string sql = $@"SELECT Код_заказа, Заказчик, Название_борд, Цвет, Количество, Дата FROM отгрузки_борд WHERE Заказчик = '{comboBox6.Text}'";
+                    MySqlDataAdapter sqladapter = new MySqlDataAdapter(sql, connection);
+                    DataSet ds = new DataSet();
+                    sqladapter.Fill(ds);
+                    отгрузки_бордDataGridView.DataSource = ds.Tables[0];
+                }
+                else
+                {
+                    refOTZB_Click(sender, e);
+                }
             }
-            else
+            else if (dialogResult == DialogResult.No)
             {
-                refOTZB_Click(sender, e);
+                
             }
         }
 
@@ -1212,6 +1286,18 @@ namespace YSA
         {
             comboBox9.Text = "";
             refOrder_Click(sender, e);
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            Form f = new DeleteWarehouse();
+            f.Show();
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            Form f = new sortbord3();
+            f.Show();
         }
 
 

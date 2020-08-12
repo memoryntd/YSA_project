@@ -12,6 +12,7 @@ namespace YSA
 {
     public partial class Main
     {
+        
         public void ComboIns()
         {
             string sql_idListBord = "SELECT DISTINCT Название_борд FROM список_борд ";

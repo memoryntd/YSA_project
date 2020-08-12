@@ -113,6 +113,7 @@
             this.addDateinBord = new System.Windows.Forms.Button();
             this.количествоTextBox = new System.Windows.Forms.TextBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.button12 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.comboBox4 = new System.Windows.Forms.ComboBox();
@@ -202,6 +203,7 @@
             this.продажа_бордTableAdapter = new YSA.ysaDataSetTableAdapters.продажа_бордTableAdapter();
             this.заказ_бордTableAdapter = new YSA.ysaDataSetTableAdapters.заказ_бордTableAdapter();
             this.отгрузки_бордTableAdapter = new YSA.ysaDataSetTableAdapters.отгрузки_бордTableAdapter();
+            this.button13 = new System.Windows.Forms.Button();
             цветLabel = new System.Windows.Forms.Label();
             название_бордLabel = new System.Windows.Forms.Label();
             количествоLabel = new System.Windows.Forms.Label();
@@ -1024,6 +1026,8 @@
             // tabPage1
             // 
             this.tabPage1.AutoScroll = true;
+            this.tabPage1.Controls.Add(this.button13);
+            this.tabPage1.Controls.Add(this.button12);
             this.tabPage1.Controls.Add(this.button4);
             this.tabPage1.Controls.Add(this.button3);
             this.tabPage1.Controls.Add(this.comboBox4);
@@ -1046,6 +1050,16 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Склад";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(663, 307);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(111, 23);
+            this.button12.TabIndex = 25;
+            this.button12.Text = "Списать со склада";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
             // button4
             // 
@@ -1085,9 +1099,9 @@
             // 
             // addWarebord
             // 
-            this.addWarebord.Location = new System.Drawing.Point(867, 149);
+            this.addWarebord.Location = new System.Drawing.Point(830, 149);
             this.addWarebord.Name = "addWarebord";
-            this.addWarebord.Size = new System.Drawing.Size(75, 23);
+            this.addWarebord.Size = new System.Drawing.Size(112, 23);
             this.addWarebord.TabIndex = 18;
             this.addWarebord.Text = "Добавить";
             this.addWarebord.UseVisualStyleBackColor = true;
@@ -1845,6 +1859,16 @@
             // 
             this.отгрузки_бордTableAdapter.ClearBeforeFill = true;
             // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(664, 336);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(111, 23);
+            this.button13.TabIndex = 26;
+            this.button13.Text = "3 сорт";
+            this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2030,5 +2054,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn цветDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn датазаключенияDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewButtonColumn Удалить_ЗБ;
+        private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Button button13;
     }
 }
