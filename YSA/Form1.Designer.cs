@@ -77,6 +77,7 @@
             this.enter.TabIndex = 13;
             this.enter.Text = "Войти";
             this.enter.UseVisualStyleBackColor = true;
+            this.enter.Click += new System.EventHandler(this.enter_Click);
             // 
             // password
             // 

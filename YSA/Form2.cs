@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using System.Data.Sql;
 using System.Linq.Expressions;
+using System.Threading;
 
 namespace YSA
 {
@@ -1299,6 +1300,216 @@ namespace YSA
             Form f = new sortbord3();
             f.Show();
         }
+
+        private void Main_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            MainLeft f = new MainLeft();
+            Application.Exit();
+        }
+
+
+        private void comboBox9_TextChanged(object sender, EventArgs e)
+        {
+            //string sql = $@"select distinct имя from заказчики where имя like '{combobox9.text}'";
+            //mysqlcommand com = new mysqlcommand(sql, connection);
+            //try
+            //{
+            //    mysqldatareader reader = com.executereader();
+            //    combobox9.items.clear();
+            //    while (reader.read())
+            //    {
+            //        combobox9.items.add(reader[0].tostring());
+            //    }
+            //    reader.close();
+
+            //    combobox9.selectionstart = combobox9.text.length;
+
+            //}
+            //catch
+            //{
+            //    string sql1 = $@"select distinct имя from заказчики";
+            //    mysqlcommand com1 = new mysqlcommand(sql1, connection);
+            //    mysqldatareader reader1 = com1.executereader();
+            //    combobox9.items.clear();
+            //    while (reader1.read())
+            //    {
+            //        combobox9.items.add(reader1[0].tostring());
+            //    }
+            //    reader1.close();
+
+            //    combobox9.selectionstart = combobox9.text.length;
+            //}
+
+
+            string sql2 = $@"SELECT DISTINCT Имя FROM заказчики WHERE имя LIKE '{comboBox9.Text}%'";
+            MySqlCommand com2 = new MySqlCommand(sql2, connection);
+            if(comboBox9.SelectedIndex >= 0)
+            {
+                comboBox9.Text = comboBox9.SelectedItem.ToString();
+            }
+            else
+            {
+                try
+                {
+                    comboBox9.Items.Clear();
+                    MySqlDataReader reader2 = com2.ExecuteReader();
+
+                    while (reader2.Read())
+                    {
+                        comboBox9.Items.Add(reader2[0].ToString());
+                    }
+                    reader2.Close();
+
+                    comboBox9.SelectionStart = comboBox9.Text.Length;
+                
+                
+                }
+                catch
+                {
+                    comboBox9.Items.Clear();
+                    string sql1 = $@"SELECT DISTINCT Имя FROM заказчики";
+                    MySqlCommand com1 = new MySqlCommand(sql1, connection);
+                    MySqlDataReader reader1 = com1.ExecuteReader();
+
+                    while (reader1.Read())
+                    {
+                        comboBox9.Items.Add(reader1[0].ToString());
+                    }
+                    reader1.Close();
+
+                    comboBox9.SelectionStart = comboBox9.Text.Length;
+                }
+            }
+
+
+            ////string a = comboBox9.Text;
+
+            ////while (comboBox9.Items.ToString() == a)
+            ////{
+
+
+
+            ////        string sql2 = $@"SELECT DISTINCT Имя FROM заказчики WHERE имя LIKE '{comboBox9.Text}%'";
+            ////        MySqlCommand com2 = new MySqlCommand(sql2, connection);
+            ////        try
+            ////        {
+            ////            comboBox9.Items.Clear();
+            ////            MySqlDataReader reader2 = com2.ExecuteReader();
+
+            ////            while (reader2.Read())
+            ////            {
+            ////                comboBox9.Items.Add(reader2[0].ToString());
+            ////            }
+            ////            reader2.Close();
+
+            ////            comboBox9.SelectionStart = comboBox9.Text.Length;
+
+            ////        }
+            ////        catch
+            ////        {
+
+            ////            string sql1 = $@"SELECT DISTINCT Имя FROM заказчики";
+            ////            MySqlCommand com1 = new MySqlCommand(sql1, connection);
+            ////            MySqlDataReader reader1 = com1.ExecuteReader();
+
+            ////            while (reader1.Read())
+            ////            {
+            ////                comboBox9.Items.Add(reader1[0].ToString());
+            ////            }
+            ////            reader1.Close();
+
+            ////            comboBox9.SelectionStart = comboBox9.Text.Length;
+            ////        }
+            ////}
+
+            //while (comboBox9.Items.ToString() != "")
+            //{
+            //    if(comboBox9.Items.ToString() != comboBox9.Text)
+            //    {
+            //        comboBox9.Items.Remove(comboBox9.Items.ToString() != comboBox9.Text);
+            //    }
+            //}
+
+        }
+
+        private void comboBox9_MouseClick(object sender, MouseEventArgs e)
+        {
+            comboBox9.DroppedDown = true;
+
+
+            //TODO: При выборе итема идет обработка изменение текста в combobox9. Из-за этого обработчик запускается снова и очищает все итемы, 
+            //что запрещает использовать из в тексте. Решить проблему удаление выбранной строки
+            //string c = comboBox9.SelectedItem.ToString();
+            //comboBox9.Text = c;
+        }
+
+
+        private void comboBox9_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+
+
+            comboBox9.Text = comboBox9.SelectedItem.ToString();
+            
+            
+        }
+
+        private void заказчикComboBox_TextChanged(object sender, EventArgs e)
+        {
+            string sq = $@"SELECT DISTINCT Имя FROM заказчики WHERE имя LIKE '{заказчикComboBox.Text}%'";
+            MySqlCommand com = new MySqlCommand(sq, connection);
+            try
+            {
+                MySqlDataReader reader = com.ExecuteReader();
+                заказчикComboBox.Items.Clear();
+                while (reader.Read())
+                {
+                    заказчикComboBox.Items.Add(reader[0].ToString());
+                }
+                reader.Close();
+
+                заказчикComboBox.SelectionStart = заказчикComboBox.Text.Length;
+            }
+            catch
+            {
+
+                string sql1 = $@"SELECT DISTINCT Имя FROM заказчики";
+                MySqlCommand com1 = new MySqlCommand(sql1, connection);
+                MySqlDataReader reader1 = com1.ExecuteReader();
+                заказчикComboBox.Items.Clear();
+                while (reader1.Read())
+                {
+                    заказчикComboBox.Items.Add(reader1[0].ToString());
+                }
+                reader1.Close();
+
+                заказчикComboBox.SelectionStart = заказчикComboBox.Text.Length;
+            }
+        }
+
+        private void заказчикComboBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            заказчикComboBox.DroppedDown = true;
+            
+            
+
+        }
+
+        private void comboBox9_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox6_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+
+
+
+
 
 
 

@@ -113,6 +113,7 @@
             this.addDateinBord = new System.Windows.Forms.Button();
             this.количествоTextBox = new System.Windows.Forms.TextBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.button13 = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -203,7 +204,6 @@
             this.продажа_бордTableAdapter = new YSA.ysaDataSetTableAdapters.продажа_бордTableAdapter();
             this.заказ_бордTableAdapter = new YSA.ysaDataSetTableAdapters.заказ_бордTableAdapter();
             this.отгрузки_бордTableAdapter = new YSA.ysaDataSetTableAdapters.отгрузки_бордTableAdapter();
-            this.button13 = new System.Windows.Forms.Button();
             цветLabel = new System.Windows.Forms.Label();
             название_бордLabel = new System.Windows.Forms.Label();
             количествоLabel = new System.Windows.Forms.Label();
@@ -1051,6 +1051,16 @@
             this.tabPage1.Text = "Склад";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(664, 336);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(111, 23);
+            this.button13.TabIndex = 26;
+            this.button13.Text = "3 сорт";
+            this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
+            // 
             // button12
             // 
             this.button12.Location = new System.Drawing.Point(663, 307);
@@ -1084,7 +1094,7 @@
             // comboBox4
             // 
             this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(785, 44);
+            this.comboBox4.Location = new System.Drawing.Point(786, 45);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(156, 21);
             this.comboBox4.TabIndex = 22;
@@ -1110,7 +1120,7 @@
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(785, 17);
+            this.comboBox1.Location = new System.Drawing.Point(786, 18);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(156, 21);
             this.comboBox1.TabIndex = 17;
@@ -1250,6 +1260,10 @@
             this.comboBox9.Name = "comboBox9";
             this.comboBox9.Size = new System.Drawing.Size(188, 21);
             this.comboBox9.TabIndex = 47;
+            this.comboBox9.SelectedIndexChanged += new System.EventHandler(this.comboBox9_SelectedIndexChanged);
+            this.comboBox9.SelectionChangeCommitted += new System.EventHandler(this.comboBox9_SelectionChangeCommitted);
+            this.comboBox9.TextChanged += new System.EventHandler(this.comboBox9_TextChanged);
+            this.comboBox9.MouseClick += new System.Windows.Forms.MouseEventHandler(this.comboBox9_MouseClick);
             // 
             // button11
             // 
@@ -1286,6 +1300,8 @@
             this.заказчикComboBox.Name = "заказчикComboBox";
             this.заказчикComboBox.Size = new System.Drawing.Size(197, 21);
             this.заказчикComboBox.TabIndex = 17;
+            this.заказчикComboBox.TextChanged += new System.EventHandler(this.заказчикComboBox_TextChanged);
+            this.заказчикComboBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.заказчикComboBox_MouseClick);
             // 
             // заказ_бордDataGridView
             // 
@@ -1420,8 +1436,8 @@
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage5);
@@ -1643,6 +1659,7 @@
             this.comboBox6.Name = "comboBox6";
             this.comboBox6.Size = new System.Drawing.Size(188, 21);
             this.comboBox6.TabIndex = 37;
+            this.comboBox6.SelectedIndexChanged += new System.EventHandler(this.comboBox6_SelectedIndexChanged);
             // 
             // button2
             // 
@@ -1859,16 +1876,6 @@
             // 
             this.отгрузки_бордTableAdapter.ClearBeforeFill = true;
             // 
-            // button13
-            // 
-            this.button13.Location = new System.Drawing.Point(664, 336);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(111, 23);
-            this.button13.TabIndex = 26;
-            this.button13.Text = "3 сорт";
-            this.button13.UseVisualStyleBackColor = true;
-            this.button13.Click += new System.EventHandler(this.button13_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1879,6 +1886,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Main";
             this.Text = "Главная";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Main_FormClosed);
             this.Load += new System.EventHandler(this.Main_Load);
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
@@ -1932,14 +1940,12 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button addDateinBord;
         private System.Windows.Forms.TextBox количествоTextBox;
-        private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.ComboBox названиеComboBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button addOrder;
         private System.Windows.Forms.TextBox количествоTextBox1;
         private System.Windows.Forms.DateTimePicker дата_заключенияDateTimePicker;
-        private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.ToolStripMenuItem менюToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private ysaDataSet ysaDataSet;
@@ -2042,7 +2048,6 @@
         private System.Windows.Forms.DateTimePicker dateTimePicker2;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.ComboBox comboBox9;
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.DateTimePicker dateTimePicker4;
         private System.Windows.Forms.DateTimePicker dateTimePicker5;
@@ -2056,5 +2061,8 @@
         private System.Windows.Forms.DataGridViewButtonColumn Удалить_ЗБ;
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.Button button13;
+        public System.Windows.Forms.TabControl tabControl1;
+        public System.Windows.Forms.TabPage tabPage1;
+        public System.Windows.Forms.ComboBox comboBox9;
     }
 }

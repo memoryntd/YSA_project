@@ -92,6 +92,17 @@ namespace YSA
                             WHERE код_заказа = '{код_заказаTextBox.Text}'";
             MySqlCommand command2 = new MySqlCommand(sql2, connection);
 
+            //string sql1 = $@"UPDATE склад_борд 
+            //                    SET В_заказах = В_заказах + '{Convert.ToInt32(количествоTextBox1.Text)}'
+            //                    WHERE Название_борд = '{названиеComboBox.Text}'" +
+            //                        $@"AND Цвет = '{цветComboBox1.Text}'";
+            //MySqlCommand command1 = new MySqlCommand(sql1, connection);
+
+            //string sql2 = $@"UPDATE склад_борд 
+            //                    SET Свободная_продажа = Количество - В_заказах
+            //                    WHERE Название_борд = '{названиеComboBox.Text}'" +
+            //                        $@"AND Цвет = '{цветComboBox1.Text}'";
+            //MySqlCommand command2 = new MySqlCommand(sql2, connection);
 
             try
             {

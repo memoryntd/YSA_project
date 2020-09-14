@@ -25,6 +25,33 @@ namespace YSA
         {
 
         }
+
+        private void enter_Click(object sender, EventArgs e)
+        {
+            if (login.Text == "")
+            {
+                if (password.Text == "")
+                {
+                    Main f = new Main();
+                    f.Show();
+                    this.Hide();
+                }
+            }
+            else if (login.Text == "1")
+            {
+                if (password.Text == "1")
+                {
+                    MainLeft f = new MainLeft();
+                    f.Show();
+                    this.Hide();
+                }
+            }
+
+            else
+            {
+                MessageBox.Show("Неверно введены данные. Попробуйте снова");
+            }
+        }
     }
 
     internal class mysqlconnection
